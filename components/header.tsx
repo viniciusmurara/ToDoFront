@@ -1,6 +1,6 @@
 import React from 'react'
 
-const header = () => {
+const Header = () => {
   return (
     <header className='bg-blue-500 p-6'> 
       <nav>
@@ -17,4 +17,4 @@ const header = () => {
   )
 }
 
-export default header
+export default Header;
