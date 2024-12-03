@@ -13,7 +13,6 @@ const header = () => {
           </li>
         </ul>
       </nav>
-
     </header>
   )
 }
