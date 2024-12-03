@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Header from "@/components/header"; // Importação do componente Header
-import UserTable from "@/components/usertable";
+import Header from "@/components/Header";
+import UserTable from "@/components/UserTable";
 import {
   Modal,
   Box,
