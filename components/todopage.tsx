@@ -156,9 +156,8 @@ const TodoPage: React.FC = () => {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className={`p-2 mb-2 bg-white rounded-lg shadow flex justify-between items-center ${
-                                  snapshot.isDragging ? "bg-blue-100" : ""
-                                }`}
+                                className={`p-2 mb-2 bg-white rounded-lg shadow flex justify-between items-center ${snapshot.isDragging ? "bg-blue-100" : ""
+                                  }`}
                                 onClick={() => handleOpenModal(item, columnId)} // Passar a coluna ao abrir o modal
                               >
                                 <span>{item.content}</span>
@@ -195,26 +194,21 @@ const TodoPage: React.FC = () => {
             </button>
           ) : (
             <div className="flex flex-col items-center space-y-4">
-              <input
-                type="text"
+              <TextField
+                fullWidth
                 value={newTodo}
                 onChange={(e) => setNewTodo(e.target.value)}
-                placeholder="Digite o novo To-Do"
+                label="Conteúdo do To-Do"
+                variant="outlined"
                 className="p-2 border border-gray-300 rounded w-64"
               />
               <div className="flex justify-between w-64">
-                <button
-                  onClick={handleAddTodo}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
+                <Button variant="contained" color="primary" onClick={handleAddTodo}>
                   Adicionar
-                </button>
-                <button
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  onClick={() => setShowInput(false)}
-                >
+                </Button>
+                <Button variant="outlined" color="error" onClick={() => setShowInput(false)}>
                   Cancelar
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -230,10 +224,11 @@ const TodoPage: React.FC = () => {
               left: "50%",
               transform: "translate(-50%, -50%)",
               width: "400px", // Aumentar largura
+              height: "250px",
               padding: "20px",
             }}
           >
-            <h2 className="text-lg font-bold mb-4">Editar To-Do</h2>
+            <h2 className="text-lg font-bold mb-10">Editar To-Do</h2>
             <TextField
               fullWidth
               value={editContent}
@@ -242,7 +237,7 @@ const TodoPage: React.FC = () => {
               variant="outlined"
               className="mb-4"
             />
-            <div className="flex justify-between">
+            <div className="flex justify-between mt-10">
               <Button
                 variant="contained"
                 color="primary"
