@@ -19,7 +19,7 @@ export default function Login() {
   const [user, setUser] = useState<User | null>(null);
   const [login, setLogin] = useState<String | null>("")
   const [senha, setSenha] = useState<String | null>("")
-  const [erroLogin, setErroLogin] = useState<String|null>(null);
+  const [erroLogin, setErroLogin] = useState<String | null>(null);
 
   const getUserByLogin = async () => {
 
@@ -40,23 +40,23 @@ export default function Login() {
 
     }
   }
-  
+
   const handleLoginFormSubmit = async (e: any) => {
 
     e.preventDefault();
 
     const resposta = await getUserByLogin();
-    
-    if(resposta){
+
+    if (resposta) {
       const usuario: User = {
         id: resposta.id,
         nome: resposta.nome,
         email: resposta.email,
         role: resposta.role
       }
-    setUser(usuario);
+      setUser(usuario);
     }
-    else{
+    else {
       setErroLogin("Usuario ou senha incorretos")
     }
   }
