@@ -1,7 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Link } from "@mui/material";
 
 export default function Register() {
+  
+  const [email,setEmail] = useState<String|null>("");
+  const [nome,setNome] = useState<String|null>("");
+  const [senha,setSenha] = useState<String|null>("");
+
+  const criarUsuario = async () => {
+
+
+
+     try {
+        const response = await fetch("http://localhost:8081/usuarios",{
+          method: "POST",
+          headers:{
+            "Content-Type" : "application/json"
+          },
+          body: JSON.stringify({
+            email : email,
+            nome : nome,
+            senha : senha,
+            role : "operador"
+          })
+        })
+
+     } catch (error) {
+      console.log(error);
+      
+     } 
+  }
+
+
   return (
     <Box
       display="flex"
@@ -29,6 +59,7 @@ export default function Register() {
             label="Nome Completo"
             placeholder="Digite seu nome completo"
             margin="normal"
+            onChange={(e) => setNome(e.target.value)}
             required
           />
           <TextField
@@ -37,6 +68,7 @@ export default function Register() {
             type="email"
             label="Email"
             placeholder="Digite seu email"
+            onChange={(e) => setEmail(e.target.value)}
             margin="normal"
             required
           />
@@ -46,6 +78,7 @@ export default function Register() {
             type="password"
             label="Senha"
             placeholder="Digite sua senha"
+            onChange={(e) => setSenha(e.target.value)}
             margin="normal"
             required
           />
@@ -63,6 +96,7 @@ export default function Register() {
             variant="contained"
             color="primary"
             type="submit"
+            onClick={criarUsuario}
             sx={{ mt: 2 }}
           >
             Cadastrar
