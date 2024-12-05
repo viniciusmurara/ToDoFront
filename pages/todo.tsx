@@ -9,6 +9,8 @@ import CustomModal from "../components/CustomModal";
 interface Item {
   id: string;
   content: string;
+  status : string;
+
 }
 
 interface Column {
@@ -67,19 +69,40 @@ const TodoPage: React.FC = () => {
   };
 
   // Adicionar novo To-Do
-  const handleAddTodo = () => {
+  const handleAddTodo = async () => {
     if (todoContent.trim() === "") return;
 
-    const newId = (Math.random() * 1000).toFixed(0);
-    const newItem: Item = { id: newId, content: todoContent };
+    try {
+      const newItem: Item = { id: newId, content: todoContent,status : "A Fazer" };
 
-    setColumns({
-      ...columns,
-      todo: {
-        ...columns.todo,
-        items: [...columns.todo.items, newItem],
-      },
-    });
+      const response = await fetch(`http://localhost:8081/todos`,{
+        method:"POST",
+        headers:{
+          "Content-type" : "application/json"
+        },
+        body: JSON.stringify({
+            texto : todoContent,
+            status : "A Fazer",
+            usuario : usuario
+        })
+      } )
+
+      
+      
+    } catch (error) {
+      
+    }
+
+
+    // const newId = (Math.random() * 1000).toFixed(0);
+
+    // setColumns({
+    //   ...columns,
+    //   todo: {
+    //     ...columns.todo,
+    //     items: [...columns.todo.items, newItem],
+    //   },
+    // });
 
     handleCloseModal();
   };

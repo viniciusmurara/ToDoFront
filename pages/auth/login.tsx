@@ -54,6 +54,7 @@ export default function Login() {
         email: resposta.email,
         role: resposta.role
       }
+      document.cookie = `Usuario=${JSON.stringify(usuario)}; path=/;`;
       setUser(usuario);
     }
     else {
