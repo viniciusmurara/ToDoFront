@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import Header from "../components/Header";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, TextField } from "@mui/material";
 import CustomModal from "../components/CustomModal";
+import { getCookie, setCookie } from "cookies-next";
 
 // Tipagem das colunas e itens
 interface Item {
@@ -21,6 +22,12 @@ interface Column {
 interface Columns {
   [key: string]: Column;
 }
+type User = {
+  id: number;
+  nome: string;
+  email: string;
+  role: string;
+}
 
 const TodoPage: React.FC = () => {
   const [columns, setColumns] = useState<Columns>({
@@ -37,12 +44,29 @@ const TodoPage: React.FC = () => {
       items: [],
     },
   });
+  
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"add" | "edit">("add");
   const [selectedTodo, setSelectedTodo] = useState<Item | null>(null);
   const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null);
   const [todoContent, setTodoContent] = useState("");
+  const [user,setUser] = useState<User>();
+
+  useEffect(() => {
+    try{
+      const usuarioCookie = getCookie("Usuario")
+      if(typeof usuarioCookie === 'string'){
+        const usuario : User = JSON.parse(usuarioCookie)
+        setUser(usuario);
+      }
+
+    }catch(err){
+      console.log(err);
+      
+    }
+  },[])
+  
 
   // Abrir modal para adicionar
   const handleOpenAddModal = () => {
@@ -68,13 +92,14 @@ const TodoPage: React.FC = () => {
     setTodoContent("");
   };
 
+  
   // Adicionar novo To-Do
   const handleAddTodo = async () => {
     if (todoContent.trim() === "") return;
 
     try {
-      const newItem: Item = { id: newId, content: todoContent,status : "A Fazer" };
-
+      // const newItem: Item = { id: newId, content: todoContent,status : "A Fazer" };
+      if(typeof user !== 'undefined'){
       const response = await fetch(`http://localhost:8081/todos`,{
         method:"POST",
         headers:{
@@ -82,14 +107,14 @@ const TodoPage: React.FC = () => {
         },
         body: JSON.stringify({
             texto : todoContent,
-            status : "A Fazer",
-            usuario : usuario
+            status : "A_FAZER",
+            idUsuario : user.id 
         })
-      } )
-
-      
+      })
+    }
       
     } catch (error) {
+      console.log(error);
       
     }
 
