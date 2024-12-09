@@ -113,7 +113,8 @@ const TodoPage: React.FC = () => {
       })
     }
       
-    } catch (error) {
+    } 
+    catch (error) {
       console.log(error);
       
     }
@@ -131,6 +132,23 @@ const TodoPage: React.FC = () => {
 
     handleCloseModal();
   };
+  const handleLoadingTodo = async () => {
+
+      try {
+        
+        const response = await fetch(`http://localhost:8081/todos/${user?.id}`)
+
+        const data = await response.json();
+
+        console.log(data);
+        
+      } catch (error) {
+        console.log(error);
+        
+      }
+
+  }
+  handleLoadingTodo();
 
   // Atualizar To-Do
   const handleUpdateTodo = () => {
