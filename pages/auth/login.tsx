@@ -86,7 +86,7 @@ export default function Login() {
               Login
             </Typography>
             {erroLogin !== null && (
-              <p className="text-center text-red-600 text-2xl">{erroLogin}</p>
+              <p className="text-center text-red-600 text-lg">{erroLogin}</p>
             )}
             <form>
               <TextField

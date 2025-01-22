@@ -158,10 +158,10 @@ const TodoPage: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
-      <div className="flex flex-col justify-center items-center p-4 bg-gray-100 h-screen" style={{ height: "calc(100vh - 12.1vh)" }}>
-        <h1 className="mb-20 text-2xl">KanBan To-Do</h1>
+      <h1 className="mt-16 text-center text-5xl">KanBan To-Do</h1>
+      <div className="flex flex-col justify-center items-center h-[calc(100vh-210px)] text-center p-4">
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="flex space-x-6">
             {Object.entries(columns).map(([columnId, column]) => (
@@ -252,7 +252,7 @@ const TodoPage: React.FC = () => {
           />
         </CustomModal>
       </div>
-    </>
+    </div>
   );
 };
 
