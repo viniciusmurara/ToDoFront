@@ -9,8 +9,8 @@ import { getCookie, setCookie } from "cookies-next";
 // Tipagem das colunas e itens
 interface Item {
   id: string;
-  content: string;
-  status : string;
+  text: string;
+  status: string;
 
 }
 
@@ -44,29 +44,36 @@ const TodoPage: React.FC = () => {
       items: [],
     },
   });
-  
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"add" | "edit">("add");
   const [selectedTodo, setSelectedTodo] = useState<Item | null>(null);
   const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null);
   const [todoContent, setTodoContent] = useState("");
-  const [user,setUser] = useState<User>();
+  const [user, setUser] = useState<User>();
+
 
   useEffect(() => {
-    try{
+    try {
       const usuarioCookie = getCookie("Usuario")
-      if(typeof usuarioCookie === 'string'){
-        const usuario : User = JSON.parse(usuarioCookie)
+      if (typeof usuarioCookie === 'string') {
+        const usuario: User = JSON.parse(usuarioCookie)
         setUser(usuario);
       }
 
-    }catch(err){
+
+    } catch (err) {
       console.log(err);
-      
+
     }
-  },[])
-  
+  }, [])
+  useEffect(() => {
+    if(user){
+      showTodo()
+    }
+  }, [user])
+
 
   // Abrir modal para adicionar
   const handleOpenAddModal = () => {
@@ -80,7 +87,7 @@ const TodoPage: React.FC = () => {
     setModalType("edit");
     setSelectedTodo(item);
     setSelectedColumnId(columnId);
-    setTodoContent(item.content);
+    setTodoContent(item.text);
     setIsModalOpen(true);
   };
 
@@ -92,63 +99,102 @@ const TodoPage: React.FC = () => {
     setTodoContent("");
   };
 
-  
+
   // Adicionar novo To-Do
   const handleAddTodo = async () => {
     if (todoContent.trim() === "") return;
 
     try {
       // const newItem: Item = { id: newId, content: todoContent,status : "A Fazer" };
-      if(typeof user !== 'undefined'){
-      const response = await fetch(`http://localhost:8081/todos`,{
-        method:"POST",
-        headers:{
-          "Content-type" : "application/json"
-        },
-        body: JSON.stringify({
-            texto : todoContent,
-            status : "A_FAZER",
-            idUsuario : user.id 
+      if (typeof user !== 'undefined') {
+        
+        const response = await fetch(`http://localhost:8081/todos`, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json"
+          },
+          body: JSON.stringify({
+            texto: todoContent,
+            status: "A_FAZER",
+            idUsuario: user.id
+          })
         })
-      })
-    }
+        const data : Item = await response.json();
+
+        setColumns((prevColumns) => ({
+          ...prevColumns,
+          todo : {
+            ...prevColumns.todo,
+            items: [...prevColumns.todo.items, data]
+          }
+        }))
       
-    } 
+      }
+    }
     catch (error) {
       console.log(error);
-      
+
     }
-
-
-    // const newId = (Math.random() * 1000).toFixed(0);
-
-    // setColumns({
-    //   ...columns,
-    //   todo: {
-    //     ...columns.todo,
-    //     items: [...columns.todo.items, newItem],
-    //   },
-    // });
 
     handleCloseModal();
   };
-  const handleLoadingTodo = async () => {
+  const handleLoadingTasks = async () => {
 
-      try {
-        
-        const response = await fetch(`http://localhost:8081/todos/${user?.id}`)
+    try {
 
-        const data = await response.json();
+      const response = await fetch(`http://localhost:8081/todos/${user?.id}`)
 
-        console.log(data);
-        
-      } catch (error) {
-        console.log(error);
-        
-      }
+      const data: Item[] = await response.json();
+
+      return data;
+
+    } 
+    catch (error) {
+      console.log(error);
+    }
 
   }
-  handleLoadingTodo();
+ 
+
+  const showTodo = async () => {
+
+    const tasks = await handleLoadingTasks();
+
+    if(Array.isArray(tasks)){
+      tasks?.forEach(task => {
+
+        if (task.status === 'A_FAZER') {
+          setColumns((prevColumns) => ({
+            ...prevColumns, // Spread do estado anterior
+            todo: {
+              ...prevColumns.todo, // Spread da coluna todo
+              items: [...prevColumns.todo.items, task], // Adiciona a nova task
+            },
+          }));
+        }
+        else if (task.status === 'EM_PROGRESSO') {
+          setColumns({
+            ...columns,
+            todo: {
+              ...columns.todo,
+              items: [...columns.inProgress.items, task],
+            },
+          });
+        }
+        else if (task.status === 'CONCLUIDO') {
+          setColumns({
+            ...columns,
+            todo: {
+              ...columns.todo,
+              items: [...columns.done.items, task],
+            },
+          });
+        }
+      })
+      
+     
+    }
+  }
 
   // Atualizar To-Do
   const handleUpdateTodo = () => {
@@ -183,6 +229,11 @@ const TodoPage: React.FC = () => {
 
     handleCloseModal();
   };
+
+
+
+
+
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -244,7 +295,7 @@ const TodoPage: React.FC = () => {
                         <p className="text-gray-400">Nenhum To-Do criado</p>
                       ) : (
                         column.items.map((item, index) => (
-                          <Draggable key={item.id} draggableId={item.id} index={index}>
+                          <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
                             {(provided, snapshot) => (
                               <div
                                 ref={provided.innerRef}
@@ -253,8 +304,8 @@ const TodoPage: React.FC = () => {
                                 className={`p-2 mb-2 bg-white rounded-lg shadow flex justify-between items-center ${snapshot.isDragging ? "bg-blue-100" : ""}`}
                                 onClick={() => handleOpenEditModal(item, columnId)}
                               >
-                                <span>{item.content}</span>
-                                <button
+                                <span className="text-black">{item.text}</span>
+                                <button 
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteTodo(columnId, item.id);
