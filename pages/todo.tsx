@@ -208,6 +208,8 @@ const TodoPage: React.FC = () => {
         item.id === selectedTodo.id ? { ...item, content: todoContent } : item
       );
 
+      atualizarTextoTodo(selectedTodo,todoContent)
+
       setColumns({
         ...columns,
         [selectedColumnId]: {
@@ -219,12 +221,32 @@ const TodoPage: React.FC = () => {
 
     handleCloseModal();
   };
+  const atualizarTextoTodo = async (todo : Item, todoContent : string) => {
+
+    try {
+
+      await fetch(`${BASE_URL}todos`, {
+        method : 'POST',
+        headers:{
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+          id : todo.id,
+          status : todo.status,
+          texto : todoContent,
+          usuario : user
+        })
+      })
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   // Remover To-Do
   const handleDeleteTodo = async (columnId: string, itemId: string) => {
 
     try {
-
       await fetch(`${BASE_URL}todos/${itemId}`, {
         method: 'Delete'
       })
