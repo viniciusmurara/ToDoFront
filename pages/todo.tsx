@@ -163,7 +163,6 @@ const TodoPage: React.FC = () => {
 
 
     const tasks = await handleLoadingTasks();
-    console.log(columns)
 
     if (Array.isArray(tasks)) {
       tasks?.forEach(task => {
@@ -205,18 +204,18 @@ const TodoPage: React.FC = () => {
   const handleUpdateTodo = () => {
     if (selectedTodo && selectedColumnId) {
       const updatedItems = columns[selectedColumnId].items.map((item) =>
-        item.id === selectedTodo.id ? { ...item, content: todoContent } : item
+        item.id === selectedTodo.id ? { ...item, text: todoContent } : item
       );
 
       atualizarTextoTodo(selectedTodo,todoContent)
 
-      setColumns({
-        ...columns,
+      setColumns( (prevColumns) => ({
+        ...prevColumns,
         [selectedColumnId]: {
-          ...columns[selectedColumnId],
+          ...prevColumns[selectedColumnId],
           items: updatedItems,
         },
-      });
+      }));
     }
 
     handleCloseModal();
@@ -226,7 +225,7 @@ const TodoPage: React.FC = () => {
     try {
 
       await fetch(`${BASE_URL}todos`, {
-        method : 'POST',
+        method : 'PUT',
         headers:{
           "Content-type": "application/json"
         },
