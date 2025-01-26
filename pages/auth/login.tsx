@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { Box, Typography, TextField, Button, Link } from "@mui/material";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Login() {
 
+  const router = useRouter();
   // interface user{
   //   "id" : number,
   //   nome : string,
@@ -54,7 +56,10 @@ export default function Login() {
         email: resposta.email,
         role: resposta.role
       }
+      document.cookie = `Usuario=${JSON.stringify(usuario)}; path=/;`;
       setUser(usuario);
+      router.push("/todo")
+
     }
     else {
       setErroLogin("Usuario ou senha incorretos")
@@ -65,7 +70,6 @@ export default function Login() {
 
   return (
     <>
-      {user === null && (
 
         <Box
           display="flex"
@@ -128,16 +132,7 @@ export default function Login() {
             </Typography>
           </Box>
         </Box>
-      )}
-      {user !== null && (
-        <div>
-          <p>{user.nome}</p>
-          <p>{user.id}</p>
-          <p>{user.role}</p>
-          <p>{user.email}</p>
-        </div>
-
-      )}
+      
 
     </>
   );
