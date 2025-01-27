@@ -1,6 +1,10 @@
+import useAuthContext from '@/Hooks/UseAuthContext';
 import React from 'react'
 
 const Header = () => {
+
+  const {logOut} = useAuthContext();
+
   return (
     <header className='bg-sky-900 p-6'> 
       <nav>
@@ -9,7 +13,7 @@ const Header = () => {
             <img src="../logo.png" alt="Logo da Empresa" className='w-24'/>
           </li>
           <li>
-            <a href="../auth/login" className='text-white text-lg'>Sair</a>
+            <a href="../auth/login" className='text-white text-lg cursor-pointer' onClick={logOut}>Sair</a>
           </li>
         </ul>
       </nav>
