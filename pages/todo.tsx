@@ -5,6 +5,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, TextField } from "@mui/material";
 import CustomModal from "../components/CustomModal";
 import { getCookie, setCookie } from "cookies-next";
+import User from "@/Model/User";
+import useAuthContext from "@/Hooks/UseAuthContext";
 
 
 const BASE_URL = 'http://localhost:8081/'
@@ -25,12 +27,7 @@ interface Column {
 interface Columns {
   [key: string]: Column;
 }
-type User = {
-  id: number;
-  nome: string;
-  email: string;
-  role: string;
-}
+
 
 const TodoPage: React.FC = () => {
   const [columns, setColumns] = useState<Columns>({
@@ -54,23 +51,10 @@ const TodoPage: React.FC = () => {
   const [selectedTodo, setSelectedTodo] = useState<Item | null>(null);
   const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null);
   const [todoContent, setTodoContent] = useState("");
-  const [user, setUser] = useState<User>();
+  const {user, setUser} = useAuthContext();
 
 
-  useEffect(() => {
-    try {
-      const usuarioCookie = getCookie("Usuario")
-      if (typeof usuarioCookie === 'string') {
-        const usuario: User = JSON.parse(usuarioCookie)
-        setUser(usuario);
-      }
 
-
-    } catch (err) {
-      console.log(err);
-
-    }
-  }, [])
   useEffect(() => {
     if (user) {
       showTodo()
